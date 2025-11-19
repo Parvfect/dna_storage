@@ -44,18 +44,3 @@ To satisfy biochemical constraints (e.g., limiting homopolymer length or GC cont
 - Easy to integrate with clustering or synthesis modules
 
 ---
-
-## Example Usage
-
-```python
-from jpeg_encoding.encoder import JpegDNAEncoder
-
-encoder = JpegDNAEncoder(
-    strand_length=200,
-    seed_length=16,
-)
-
-strands = encoder.encode("image.jpg")
-
-for s in strands:
-    print(s)
