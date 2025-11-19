@@ -1,4 +1,6 @@
 
+from jpeg_encoding.crc_encoding import get_crc_strand
+from jpeg_encoding.xor import get_valid_xor_seed_and_strand, get_bitstream_from_strand, check_obeys_dna_constraints
 import numpy as np
 from textwrap import wrap
 import math
@@ -7,8 +9,6 @@ import os
 from itertools import cycle
 from datetime import datetime
 import json
-from crc_encoding import get_crc_strand
-from xor import get_valid_xor_seed_and_strand, get_bitstream_from_strand, check_obeys_dna_constraints
 from datetime import datetime
 
 
@@ -102,8 +102,9 @@ def encode_strands(
     
     fasta_file = "bird_strands.fasta"
     cfg_file = "cfg.json"
-    if os.path.isdir('data'):
-        new_path = os.path.join('data', timestamp)
+    preceding_path = 'jpeg_encoding/data/'
+    if os.path.isdir(preceding_path):
+        new_path = os.path.join(preceding_path, timestamp)
         os.makedirs(new_path)
 
         fasta_file = os.path.join(new_path, fasta_file)
@@ -207,7 +208,8 @@ def save_partially_decoded_jpeg(
     print(decoded_file)
 
     if os.path.isdir('data'):
-        new_path = os.path.join('data', timestamp)
+        preceding_path = 'jpeg_encoding/data/'
+        new_path = os.path.join(preceding_path, timestamp)
         decoded_file = os.path.join(new_path, decoded_file)
 
     with open(decoded_file, "wb") as f:
@@ -224,7 +226,7 @@ if __name__ == '__main__':
     decoded_file = "bird_decoded.jpg"
     cfg_file = "cfg.json"
     xor_seed = '01001'
-    input_file_jpeg = 'data/bird.jpg'
+    input_file_jpeg = r"C:\Users\Parv\Doc\RA\Projects\dna_storage\jpeg_encoding\data\bird.jpg"
 
     strand_length = 1093          # total bases per strand (including primer)
     primer_prefix = "ACGTACGTACGT" # 20nt primer (easy to read/recognize)

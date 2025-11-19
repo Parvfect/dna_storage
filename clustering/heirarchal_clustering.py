@@ -1,7 +1,8 @@
 
+
+from clustering.strand_reconstruction import multiple_alignment_muscle, majority_merge
 from Levenshtein import distance
 from tqdm import tqdm
-from strand_reconstruction import multiple_alignment_muscle, majority_merge
 import random
 import numpy as np
 from utils import reverse_complement

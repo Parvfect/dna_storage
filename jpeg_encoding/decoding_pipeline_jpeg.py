@@ -1,13 +1,12 @@
 
-from utils import read_synthesized_strands_from_file
+
+from jpeg_encoding.crc_encoding import get_crc_strand
+from jpeg_encoding.jpeg_strand_encoding import save_partially_decoded_jpeg
+from clustering.clustering import Clustering
+from clustering.strand_reconstruction import make_prediction
+from utils import read_synthesized_strands_from_file, get_fastq_records, reverse_complement
 import Levenshtein
-from clustering import Clustering
-from utils import get_fastq_records
-from strand_reconstruction import make_prediction
 from tqdm import tqdm
-from utils import reverse_complement
-from crc_encoding import get_crc_strand
-from jpeg_strand_encoding import save_partially_decoded_jpeg
 import os
 
 def validate_crc(strand, info_length=1113):

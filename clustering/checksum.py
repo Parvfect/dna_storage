@@ -2,7 +2,7 @@
 from typing import List, Tuple
 from math import floor
 from utils import reverse_complement
-from strand_reconstruction import make_prediction
+from clustering import make_prediction
 from tqdm import tqdm
 
 

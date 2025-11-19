@@ -4,7 +4,8 @@ import typing
 from re import compile, search
 from collections import Counter
 
-from fallback_code import strContainsSub_python, microsatellite_python, longestSequenceOfChar_python
+from jpeg_encoding.rules.fallback_code import \
+    strContainsSub_python, microsatellite_python, longestSequenceOfChar_python
 
 try:
     import cdnarules

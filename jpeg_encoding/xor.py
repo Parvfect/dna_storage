@@ -1,9 +1,11 @@
 
-from crc_encoding import \
+
+from jpeg_encoding.rules.testing import test_strand
+from jpeg_encoding.crc_encoding import \
     convert_dna_to_binary_string, convert_binary_string_to_dna
+from utils import read_synthesized_strands_from_file
 from itertools import cycle
 import random
-from utils import read_synthesized_strands_from_file
 from tqdm import tqdm
 from collections import Counter
 
@@ -77,27 +79,35 @@ def add_xor_mask(bitstream, seed=None):
         '1' if b != mask else '0' for b, mask in zip(
             bitstream, cycle(seed)))
 
+def check_dna_constraints_norec(strand, threshold = 0.6):
+    return test_strand(strand) < threshold
+
 
 def get_valid_xor_seed_and_strand(strand, xor_seed_length=20):
     
     xor_seed_dna = ""
     final_strand = ""
-    for i in range(4):
-        start = i * 300
-        end = (i + 1) * 300
-        if end > len(strand):
-            end = len(strand)
-        substrand = strand[start: end]
-        bin_strand = convert_dna_to_binary_string(
-            substrand)
-        while True:
+    
+    while True:
+        for i in range(4):
+            start = i * 300
+            end = (i + 1) * 300
+            if end > len(strand):
+                end = len(strand)
+            substrand = strand[start: end]
+            bin_strand = convert_dna_to_binary_string(
+                substrand)
             xor_seed = generate_random_xor_seed(xor_seed_length)
             xored_bin_string = add_xor_mask(bin_strand, xor_seed)
             new_strand = convert_binary_string_to_dna(xored_bin_string)
-            if check_obeys_dna_constraints(new_strand):
-                final_strand += new_strand
-                xor_seed_dna += convert_binary_string_to_dna(xor_seed)
-                break
+            #if check_obeys_dna_constraints(new_strand):
+            
+            final_strand += new_strand
+            xor_seed_dna += convert_binary_string_to_dna(xor_seed)
+
+        if check_dna_constraints_norec(final_strand) or check_obeys_dna_constraints(
+            final_strand):
+            break
 
     return final_strand, xor_seed_dna
 

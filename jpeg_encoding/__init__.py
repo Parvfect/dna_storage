@@ -5,5 +5,3 @@ __all__ = [
     "jpeg_strand_encoding",
     "xor"
 ]
-
-from . import *
