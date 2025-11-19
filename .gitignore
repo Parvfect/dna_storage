@@ -1,0 +1,11 @@
+*.fasta
+*.json
+*.pkl
+**/__pycache__
+*.gz
+**/priority
+*.fastq
+*.txt
+*.html
+2025*
+data*
