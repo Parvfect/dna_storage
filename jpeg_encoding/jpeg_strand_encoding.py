@@ -49,6 +49,18 @@ def encode_strands(
     Splits to length such that its equally balanced
     """
 
+    fasta_file = "bird_strands.fasta"
+    bitstream_strands = "bird_bit_strands.fasta"
+    cfg_file = "cfg.json"
+    preceding_path = 'jpeg_encoding/data/'
+    if os.path.isdir(preceding_path):
+        new_path = os.path.join(preceding_path, timestamp)
+        os.makedirs(new_path)
+
+        fasta_file = os.path.join(new_path, fasta_file)
+        cfg_file = os.path.join(new_path, cfg_file)
+        bitstream_strand_file = os.path.join(new_path, bitstream_strands)
+
     with open(input_file_jpeg, "rb") as f:
         data = np.frombuffer(f.read(), dtype=np.uint8)
 
@@ -56,7 +68,6 @@ def encode_strands(
     ptr = 0
     dna = ''.join(bits_to_base[bitstream[i:i+2]] for i in range(
         0, len(bitstream), 2))
-        #dna = fsm_encode(bitstream)
 
     payload_length = strand_length
     total_bases = len(dna)
@@ -66,14 +77,18 @@ def encode_strands(
     bases_per_strand = min(n_strands, payload_length)
     chunks = wrap(dna, strand_length)        
 
+    with open(bitstream_strand_file, "w") as f:
+        for i, strand in enumerate(chunks):
+            f.write(f">strand_{i}\n{strand}\n")
+
+
     new_strands = []
     xor_seeds = []
     for strand in chunks:
-        xor_strand, xor_seed, = get_valid_xor_seed_and_strand(strand)
+        xor_strand, xor_seed = get_valid_xor_seed_and_strand(strand)
         new_strands.append(xor_strand)
         xor_seeds.append(xor_seed)
     
-    print(len(xor_seeds[0]))
     strand_ids = xor_seeds
 
     # Add primers (truncate or pad as needed)
@@ -83,7 +98,7 @@ def encode_strands(
     
     padding = np.zeros(n_strands)
     padded_strands = []
-    strand_length = strand_length + id_length
+    strand_length = len(strands[0])
 
     for ind, strand in enumerate(strands):
         padding_length = 0
@@ -100,15 +115,6 @@ def encode_strands(
         strands = [
             get_crc_strand(strand) for strand in strands]
     
-    fasta_file = "bird_strands.fasta"
-    cfg_file = "cfg.json"
-    preceding_path = 'jpeg_encoding/data/'
-    if os.path.isdir(preceding_path):
-        new_path = os.path.join(preceding_path, timestamp)
-        os.makedirs(new_path)
-
-        fasta_file = os.path.join(new_path, fasta_file)
-        cfg_file = os.path.join(new_path, cfg_file)
 
     with open(fasta_file, "w") as f:
         for i, strand in enumerate(strands):
@@ -220,7 +226,7 @@ def save_partially_decoded_jpeg(
 
 if __name__ == '__main__':
 
-    id_length = 40
+    id_length = 20
     dir = os.path.join("data", "bird")
 
     decoded_file = "bird_decoded.jpg"
